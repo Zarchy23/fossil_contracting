@@ -1,0 +1,125 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+env.bak/
+venv.bak/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Large Image Files - Store separately or in CDN
+frontend/static/images/*.jpg
+frontend/static/images/*.jpeg
+frontend/static/images/*.png
+frontend/static/images/*.gif
+frontend/static/images/*.JPG
+frontend/images/*.jpg
+frontend/images/*.jpeg
+frontend/images/*.png
+frontend/images/*.gif
+
+# Cache files
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node (for frontend if using npm)
+node_modules/
+npm-debug.log
+yarn-error.log
+/.next/
+/out/
+.pnp.*
+
+# OS
+.DS_Store
+Thumbs.db
+*.pem
+*.key
+
+# Testing
+.coverage
+.pytest_cache/
+.tox/
+
+# Miscellaneous
+*.bak
+*.tmp
+*.temp
+.project
+.pydevproject
+.settings/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Generated files
+staticfiles/
+/static/
+collect_static/
+*.sqlite3
+*.db
+db.sqlite3
+staticfiles/
+frontend/static/
+frontend/staticfiles/
+__pycache__/
+*.pyc
+.env
+node_modules/
+*.sqlite3
+*.db
+db.sqlite3
+staticfiles/
+frontend/static/
+frontend/staticfiles/
+__pycache__/
+*.pyc
+.env
+node_modules/

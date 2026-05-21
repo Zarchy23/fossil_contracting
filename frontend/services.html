@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Fossil Contracting</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <img src="/static/images/logo.png" alt="Fossil Contracting" class="logo-img">
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about/">About</a></li>
+                    <li><a href="/services/" class="active">Services</a></li>
+                    <li><a href="/projects/">Projects</a></li>
+                    <li><a href="/contact/">Contact</a></li>
+                </ul>
+                <div class="nav-buttons">
+                    <a href="/contact/" class="btn-primary">Get a Quote</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main style="margin-top: 80px; padding: 60px 0;">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title">Our Services</h1>
+                <p class="section-subtitle">Comprehensive Civil Engineering Solutions</p>
+            </div>
+            
+            <div class="services-grid" id="allServicesGrid" style="margin-top: 60px; grid-template-columns: repeat(2, 1fr);">
+                <!-- Services loaded via JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <img src="/static/images/logo.png" alt="Fossil Contracting" class="footer-logo-img">
+                    </div>
+                    <p>Zimbabwe's premium civil contracting company.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about/">About</a></li>
+                        <li><a href="/projects/">Projects</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-phone"></i> +263 8677 009771</li>
+                        <li><i class="fas fa-envelope"></i> admin@fossilzim.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fossil Contracting. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const servicesGrid = document.getElementById('allServicesGrid');
+        const services = [
+            {
+                id: 'road',
+                icon: '🛣️',
+                image: '/static/images/DJI_20250530162006_0002_V.jpg',
+                title: 'Road Construction',
+                description: 'We specialize in flexible pavement design and construction, full road rehabilitation, comprehensive drainage systems, and premium asphalt surfacing.',
+                link: '#road'
+            },
+            {
+                id: 'land-dev',
+                icon: '🗺️',
+                image: '/static/images/DJI_20250530162737_0039_V.jpg',
+                title: 'Land Development',
+                description: 'Comprehensive land development services including site planning, land clearing, grading, and infrastructure preparation for residential and commercial projects.',
+                link: '/services/land-development/'
+            },
+            {
+                id: 'earth',
+                icon: '🚜',
+                image: '/static/images/DJI_20250530162737_0039_V.jpg',
+                title: 'Earth Works',
+                description: 'Bulk earthmoving operations, precision excavations, strategic stockpiling, and efficient load & haul services for large-scale projects.',
+                link: '#earth'
+            },
+            {
+                id: 'building',
+                icon: '🏗️',
+                image: '/static/images/DJI_20250529171556_0077_D.jpg',
+                title: 'Building Works',
+                description: 'Complex residential and industrial construction projects delivered to international standards with complete project management.',
+                link: '#building'
+            },
+            {
+                id: 'mining',
+                icon: '⛏️',
+                image: '/static/images/DJI_20250529171427_0071_D.jpg',
+                title: 'Contract Mining',
+                description: 'Opencast chrome and coal mining operations with modern equipment fleet, full rehabilitation, and environmental compliance.',
+                link: '#mining'
+            },
+            {
+                id: 'plant',
+                icon: '🚜',
+                image: '/static/images/DJI_20250529171044_0066_D.jpg',
+                title: 'Plant Hire',
+                description: 'Complete fleet of heavy machinery and equipment available for hire, including dozers, excavators, and specialized mining equipment.',
+                link: '#plant'
+            },
+            {
+                id: 'water',
+                icon: '💧',
+                image: '/static/images/DJI_20250529171000_0065_D.jpg',
+                title: 'Water Infrastructure',
+                description: 'Dam construction, water supply systems, and irrigation infrastructure projects with environmental sustainability measures.',
+                link: '/dam-construction/'
+            }
+        ];
+        
+        servicesGrid.innerHTML = services.map(service => `
+            <div id="${service.id}" class="service-card">
+                <div class="service-image">
+                    <img src="${service.image}" alt="${service.title}">
+                    <div class="service-icon-overlay">${service.icon}</div>
+                </div>
+                <div class="service-content">
+                    <h3>${service.title}</h3>
+                    <p>${service.description}</p>
+                    <a href="${service.link}" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        `).join('');
+        
+        // Add smooth scroll for service links after rendering
+        document.querySelectorAll('.service-link').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else if (href.startsWith('/')) {
+                    // External page link - allow default navigation
+                    return true;
+                }
+            });
+        });
+        
+        // Handle direct anchor link on page load (e.g., /services/#road)
+        if (window.location.hash) {
+            const target = document.querySelector(window.location.hash);
+            if (target) {
+                setTimeout(() => {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+    });
+    </script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
+
+

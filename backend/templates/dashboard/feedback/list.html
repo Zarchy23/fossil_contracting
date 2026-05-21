@@ -1,0 +1,92 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}
+<h1><i class="fas fa-comments"></i> Feedback</h1>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Anonymous Feedback</h2>
+    <span class="badge bg-danger" style="font-size: 1rem;">{{ unread_count }} Unread</span>
+</div>
+
+{% if feedbacks %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Homepage</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for feedback in feedbacks %}
+                <tr {% if not feedback.is_read %}style="background-color: #f0f8ff;"{% endif %}>
+                    <td>
+                        {% if feedback.type == 'COMPLAINT' %}
+                            <span class="badge bg-danger">Complaint</span>
+                        {% elif feedback.type == 'SUGGESTION' %}
+                            <span class="badge bg-info">Suggestion</span>
+                        {% elif feedback.type == 'PRAISE' %}
+                            <span class="badge bg-success">Praise</span>
+                        {% elif feedback.type == 'BUG_REPORT' %}
+                            <span class="badge bg-warning text-dark">Bug</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ feedback.type }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ feedback.message|truncatewords:15 }}</strong>
+                        {% if not feedback.is_read %}
+                            <i class="fas fa-circle" style="color: #dc3545; font-size: 0.5rem; margin-left: 0.5rem;"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ feedback.created_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if feedback.is_read %}
+                            <span style="color: #6c757d;">Read</span>
+                        {% else %}
+                            <span class="badge bg-light text-dark">Unread</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if feedback.display_on_homepage %}
+                            <form method="POST" action="{% url 'feedback_detail' feedback.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="toggle_homepage" value="false">
+                                <input type="hidden" name="next" value="feedback_list">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fas fa-check"></i> On
+                                </button>
+                            </form>
+                        {% else %}
+                            <form method="POST" action="{% url 'feedback_detail' feedback.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="toggle_homepage" value="true">
+                                <input type="hidden" name="next" value="feedback_list">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Off
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'feedback_detail' feedback.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> No feedback yet.
+    </div>
+{% endif %}
+{% endblock %}

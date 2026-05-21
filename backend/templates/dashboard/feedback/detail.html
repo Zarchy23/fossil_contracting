@@ -1,0 +1,72 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}
+<h1><i class="fas fa-comment"></i> Feedback Details</h1>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Feedback Details</h2>
+    <a href="{% url 'feedback_list_view' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+</div>
+
+<div style="background-color: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); max-width: 800px;">
+    <div style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h4 style="color: #1a472a; margin: 0;">
+                {% if feedback.type == 'COMPLAINT' %}
+                    <span class="badge bg-danger">Complaint</span>
+                {% elif feedback.type == 'SUGGESTION' %}
+                    <span class="badge bg-info">Suggestion</span>
+                {% elif feedback.type == 'PRAISE' %}
+                    <span class="badge bg-success">Praise</span>
+                {% elif feedback.type == 'BUG_REPORT' %}
+                    <span class="badge bg-warning text-dark">Bug Report</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ feedback.type }}</span>
+                {% endif %}
+                {% if not feedback.is_read %}
+                    <span class="badge bg-light text-dark">Unread</span>
+                {% endif %}
+            </h4>
+        </div>
+        
+        <div style="background-color: #f8f9fa; padding: 1.5rem; border-radius: 0.375rem; margin-bottom: 1.5rem;">
+            <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">{{ feedback.message }}</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <p style="margin: 0; font-size: 0.85rem; color: #6c757d; font-weight: 500; text-transform: uppercase;">Date</p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 1rem;">{{ feedback.created_at|date:"M d, Y - H:i" }}</p>
+            </div>
+            
+            <div>
+                <p style="margin: 0; font-size: 0.85rem; color: #6c757d; font-weight: 500; text-transform: uppercase;">Type</p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 1rem;">{{ feedback.get_type_display }}</p>
+            </div>
+            
+            <div>
+                <p style="margin: 0; font-size: 0.85rem; color: #6c757d; font-weight: 500; text-transform: uppercase;">Status</p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 1rem;">
+                    {% if feedback.is_read %}
+                        <span class="badge bg-success">Read</span>
+                    {% else %}
+                        <span class="badge bg-light text-dark">Unread</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div style="border-top: 1px solid #e9ecef; padding-top: 1.5rem;">
+        <div class="d-flex gap-2">
+            <a href="{% url 'feedback_list_view' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

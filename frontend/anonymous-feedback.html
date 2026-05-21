@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Feedback - Fossil Contracting</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <img src="/static/images/logo.png" alt="Fossil Contracting" class="logo-img">
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/anonymous-feedback/" class="active">Feedback</a></li>
+                    <li><a href="/community-blog/">Community</a></li>
+                </ul>
+                <div class="nav-buttons">
+                    <a href="/" class="btn-primary">Back to Home</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main style="margin-top: 80px; padding: 60px 0;">
+        <div class="container" style="max-width: 800px;">
+            <div class="section-header">
+                <div class="section-badge">🔒 PRIVATE & SECURE</div>
+                <h1 class="section-title">Share Your Feedback</h1>
+                <p class="section-subtitle">Your voice matters. Share anonymously, no login required.</p>
+            </div>
+            
+            <form id="feedbackForm" style="background: white; border-radius: 20px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 48px;">
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 12px; color: #1f2937; font-weight: 600;">Feedback Type</label>
+                    <select name="type" required style="width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-family: inherit;">
+                        <option value="COMPLAINT">🚨 Complaint</option>
+                        <option value="SUGGESTION">💡 Suggestion</option>
+                        <option value="PRAISE">⭐ Praise</option>
+                        <option value="INQUIRY">❓ Inquiry</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 12px; color: #1f2937; font-weight: 600;">Your Message</label>
+                    <textarea name="message" rows="8" required placeholder="Share your thoughts..." style="width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+
+                <div style="background: #f0fdf4; border-left: 4px solid #166534; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                    <p style="color: #166534; font-size: 14px; margin: 0;">
+                        <strong>✓ 100% Anonymous:</strong> Your IP address is hashed and never stored. We cannot identify you.
+                    </p>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 14px; border: none; cursor: pointer; font-size: 16px;">Submit Feedback</button>
+            </form>
+
+            <div id="feedbackList" style="margin-top: 60px;">
+                <h2 style="color: #166534; margin-bottom: 24px;">Recent Feedback</h2>
+                <div id="feedbackItems" style="display: grid; gap: 16px;">
+                    <!-- Feedback loaded via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <span>© 2025 Fossil Contracting</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    const reactionEmojis = ['👍', '❤️', '😂', '😮', '😢', '😠'];
+
+    async function loadReactions(feedbackId) {
+        try {
+            const res = await fetch(`http://localhost:8000/api/reactions/get/?content_type=feedback&object_id=${feedbackId}`);
+            const reactions = await res.json();
+            return reactions || {};
+        } catch {
+            return {};
+        }
+    }
+
+    async function addReaction(feedbackId, emoji) {
+        try {
+            const res = await fetch('http://localhost:8000/api/reactions/add/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    emoji: emoji,
+                    content_type: 'feedback',
+                    object_id: feedbackId
+                })
+            });
+            if (res.ok) {
+                loadFeedbackItems();
+            }
+        } catch (error) {
+            console.error('Error adding reaction:', error);
+        }
+    }
+
+    async function loadFeedbackItems() {
+        const feedbackData = await fetch('http://localhost:8000/api/feedback/').then(r => r.json()).catch(e => {
+            console.error('Failed to load feedback:', e);
+            return [];
+        });
+
+        const feedbackItems = document.getElementById('feedbackItems');
+        if (feedbackData && feedbackData.length > 0) {
+            feedbackItems.innerHTML = feedbackData.slice(0, 10).map(fb => `
+                <div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600;">${fb.type}</span>
+                        <span style="color: #9ca3af; font-size: 12px;">${new Date(fb.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <p style="color: #4b5563; margin-bottom: 12px;">${fb.message}</p>
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap; border-top: 1px solid #e5e7eb; padding-top: 12px;">
+                        ${reactionEmojis.map(emoji => `
+                            <button onclick="addReaction(${fb.id}, '${emoji}')" style="background: #f3f4f6; border: 1px solid #e5e7eb; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
+                                <span>${emoji}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            feedbackItems.innerHTML = '<p style="color: #6b7280; text-align: center;">No feedback yet. Be the first to share!</p>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFeedbackItems();
+    });
+
+    document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = {
+            type: formData.get('type'),
+            message: formData.get('message')
+        };
+
+        try {
+            const response = await fetch('http://localhost:8000/api/feedback/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert('✓ Thank you! Your feedback has been submitted anonymously.');
+                this.reset();
+                location.reload();
+            } else {
+                alert('Failed to submit feedback. Please try again.');
+            }
+        } catch (error) {
+            alert('Error submitting feedback: ' + error.message);
+        }
+    });
+    </script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
+
+

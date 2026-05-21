@@ -1,0 +1,618 @@
+{% extends "dashboard/base.html" %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .dashboard-header h1 {
+        background: linear-gradient(135deg, #0f766e 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .dashboard-header p {
+        color: #6b7280;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 1.25rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #0f766e, #14b8a6);
+    }
+    
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        bottom: -40%;
+        right: -40%;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(20, 184, 166, 0.1), transparent);
+        border-radius: 50%;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+        border-color: rgba(20, 184, 166, 0.3);
+    }
+    
+    .stat-card-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stat-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-card-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 0.875rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        background: linear-gradient(135deg, rgba(15, 118, 110, 0.15), rgba(139, 92, 246, 0.15));
+        color: #0f766e;
+    }
+    
+    .stat-card-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #0f766e, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-card-label {
+        color: #6b7280;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+    
+    .action-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .action-card {
+        background: white;
+        border-radius: 1.25rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .action-card:hover {
+        box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+    }
+    
+    .action-card h5 {
+        background: linear-gradient(135deg, #0f766e, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .action-card .btn {
+        border-radius: 0.75rem;
+        padding: 0.75rem 1.25rem;
+        font-weight: 600;
+        width: 100%;
+        margin-bottom: 0.75rem;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .action-card .btn:last-child {
+        margin-bottom: 0;
+    }
+    
+    .action-card .btn-primary {
+        background: linear-gradient(135deg, #0f766e, #8b5cf6);
+        color: white;
+        box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+    }
+    
+    .action-card .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 118, 110, 0.4);
+        color: white;
+    }
+    
+    .action-card .btn-outline-primary {
+        color: #0f766e;
+        border: 2px solid #0f766e;
+        background: transparent;
+    }
+    
+    .action-card .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #0f766e, #8b5cf6);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 1.25rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .info-card h5 {
+        background: linear-gradient(135deg, #0f766e, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .info-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .info-card li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        color: #374151;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .info-card li:last-child {
+        border-bottom: none;
+    }
+    
+    .info-card li i {
+        color: #06b6d4;
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .info-card li strong {
+        color: #1f2937;
+    }
+    
+    /* Advanced Analytics Section */
+    .analytics-section {
+        margin-bottom: 3rem;
+    }
+    
+    .section-title {
+        background: linear-gradient(135deg, #0f766e, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .metric-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #0f766e, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+    
+    .metric-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .metric-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
+        color: #0f766e;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Activity Timeline */
+    .activity-timeline {
+        background: white;
+        border-radius: 1.25rem;
+        padding: 2rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .timeline-item {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .timeline-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .timeline-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.15));
+        color: #0f766e;
+        flex-shrink: 0;
+        margin-top: 0.25rem;
+    }
+    
+    .timeline-content h6 {
+        color: #1f2937;
+        font-weight: 700;
+        margin: 0 0 0.25rem 0;
+        font-size: 0.95rem;
+    }
+    
+    .timeline-content p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    
+    .timeline-time {
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+    
+    .performance-bar {
+        background: linear-gradient(90deg, #e5e7eb, #f3f4f6);
+        height: 8px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 0.75rem;
+    }
+    
+    .performance-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #06b6d4, #0f766e);
+        border-radius: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block page_title %}
+<div class="dashboard-header">
+    <h1><i class="fas fa-chart-line"></i> Dashboard</h1>
+    <p>Welcome back! Here's an overview of your website's performance</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Primary Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-content">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-number">{{ stats.projects }}</div>
+                    <div class="stat-card-label">Projects</div>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-card-content">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-number">{{ stats.blog_posts }}</div>
+                    <div class="stat-card-label">Blog Posts</div>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-card-content">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-number">{{ stats.feedback }}</div>
+                    <div class="stat-card-label">Unread Messages</div>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-card-content">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-number">{{ stats.company_stats }}</div>
+                    <div class="stat-card-label">Statistics</div>
+                </div>
+                <div class="stat-card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Analytics Section -->
+<div class="analytics-section">
+    <h2 class="section-title"><i class="fas fa-sparkles"></i> Performance Metrics</h2>
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-value">{{ stats.projects }}</div>
+            <div class="metric-label">Active Projects</div>
+            <div class="metric-badge">Managed</div>
+            <div class="performance-bar">
+                <div class="performance-bar-fill" style="width: 85%;"></div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-value">{{ stats.blog_posts }}</div>
+            <div class="metric-label">Published Articles</div>
+            <div class="metric-badge">Content</div>
+            <div class="performance-bar">
+                <div class="performance-bar-fill" style="width: 25%;"></div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-value">{{ stats.feedback }}</div>
+            <div class="metric-label">Community Feedback</div>
+            <div class="metric-badge">Engagement</div>
+            <div class="performance-bar">
+                <div class="performance-bar-fill" style="width: 60%;"></div>
+            </div>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-value">100%</div>
+            <div class="metric-label">System Performance</div>
+            <div class="metric-badge">Uptime</div>
+            <div class="performance-bar">
+                <div class="performance-bar-fill" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action & Info Cards -->
+<div class="action-cards">
+    <div class="action-card">
+        <h5><i class="fas fa-rocket"></i> Quick Actions</h5>
+        <a href="{% url 'project_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Project
+        </a>
+        <a href="{% url 'blog_create' %}" class="btn btn-outline-primary">
+            <i class="fas fa-pen"></i> Write Blog Post
+        </a>
+        <a href="{% url 'stat_create' %}" class="btn btn-outline-primary">
+            <i class="fas fa-chart-bar"></i> Add Statistic
+        </a>
+    </div>
+    
+    <div class="action-card info-card">
+        <h5><i class="fas fa-info-circle"></i> Information & Tips</h5>
+        <ul>
+            <li>
+                <i class="fas fa-check-circle"></i>
+                <span><strong>Welcome!</strong> Use the menu on the left to manage your website content.</span>
+            </li>
+            <li>
+                <i class="fas fa-rocket"></i>
+                <span>All changes are saved instantly and go live immediately</span>
+            </li>
+            <li>
+                <i class="fas fa-shield-alt"></i>
+                <span>Only staff members can access this admin area</span>
+            </li>
+            <li>
+                <i class="fas fa-clock"></i>
+                <span>Monitor your feedback and community engagement in real-time</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Anonymous Feedback Management -->
+<div class="analytics-section">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+        <h2 class="section-title" style="margin-bottom: 0;"><i class="fas fa-comments"></i> Anonymous Feedback</h2>
+        <span style="background: #ef4444; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 700; font-size: 0.85rem;">{{ unread_feedback_count }} Unread</span>
+    </div>
+    
+    <div style="background: white; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid rgba(0, 0, 0, 0.05);">
+        {% if recent_feedback %}
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+                            <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Type</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Sender</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Date</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600; color: #374151;">Status</th>
+                            <th style="padding: 1rem; text-align: center; font-weight: 600; color: #374151;">Homepage</th>
+                            <th style="padding: 1rem; text-align: right; font-weight: 600; color: #374151;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fb in recent_feedback %}
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 1rem;">
+                                {% if fb.type == 'COMPLAINT' %}
+                                    <span style="background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem;">COMPLAINT</span>
+                                {% elif fb.type == 'SUGGESTION' %}
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem;">SUGGESTION</span>
+                                {% elif fb.type == 'PRAISE' %}
+                                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem;">PRAISE</span>
+                                {% elif fb.type == 'INQUIRY' %}
+                                    <span style="background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem;">INQUIRY</span>
+                                {% else %}
+                                    <span style="background: #8b5cf6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem;">FEEDBACK</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem; color: #111827;">{{ fb.name|default:"Anonymous" }}</td>
+                            <td style="padding: 1rem; color: #6b7280; font-size: 0.9rem;">{{ fb.created_at|date:"M d H:i" }}</td>
+                            <td style="padding: 1rem;">
+                                {% if fb.is_read %}
+                                    <span style="color: #6b7280;">Read</span>
+                                {% else %}
+                                    <span style="color: #ef4444; font-weight: 600;">●</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem; text-align: center;">
+                                {% if fb.display_on_homepage %}
+                                    <form method="POST" action="{% url 'feedback_detail' fb.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="toggle_homepage" value="false">
+                                        <input type="hidden" name="next" value="dashboard">
+                                        <button type="submit" class="btn btn-sm btn-success" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">
+                                            <i class="fas fa-check-circle"></i> On
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form method="POST" action="{% url 'feedback_detail' fb.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="toggle_homepage" value="true">
+                                        <input type="hidden" name="next" value="dashboard">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">
+                                            <i class="fas fa-circle"></i> Off
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem; text-align: right;">
+                                <a href="{% url 'feedback_detail' fb.id %}" class="btn btn-sm btn-primary" style="font-size: 0.75rem;">View</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="padding: 2rem; text-align: center; color: #9ca3af;">
+                <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                <p>No feedback yet - Anonymous feedback will appear here</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div style="margin-top: 1.5rem; text-align: right;">
+        <a href="{% url 'feedback_list_view' %}" class="btn btn-primary">View All Feedback →</a>
+    </div>
+</div>
+{% endblock %}

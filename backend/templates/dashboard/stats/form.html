@@ -1,0 +1,98 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}
+<h1><i class="fas fa-chart-bar"></i> {{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ title }}</h2>
+</div>
+
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <div class="mb-3">
+            <label for="{{ form.label.id_for_label }}" class="form-label">Label *</label>
+            {{ form.label }}
+            {% if form.label.errors %}
+                <div class="text-danger small mt-1">{{ form.label.errors }}</div>
+            {% endif %}
+            <small class="text-muted">e.g., "Projects Completed"</small>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.value.id_for_label }}" class="form-label">Value *</label>
+                    {{ form.value }}
+                    {% if form.value.errors %}
+                        <div class="text-danger small mt-1">{{ form.value.errors }}</div>
+                    {% endif %}
+                    <small class="text-muted">e.g., "250"</small>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.suffix.id_for_label }}" class="form-label">Suffix</label>
+                    {{ form.suffix }}
+                    {% if form.suffix.errors %}
+                        <div class="text-danger small mt-1">{{ form.suffix.errors }}</div>
+                    {% endif %}
+                    <small class="text-muted">e.g., "+"</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.icon.id_for_label }}" class="form-label">Icon (Font Awesome)</label>
+                    {{ form.icon }}
+                    {% if form.icon.errors %}
+                        <div class="text-danger small mt-1">{{ form.icon.errors }}</div>
+                    {% endif %}
+                    <small class="text-muted">e.g., "fas fa-briefcase"</small>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.order.id_for_label }}" class="form-label">Display Order</label>
+                    {{ form.order }}
+                    {% if form.order.errors %}
+                        <div class="text-danger small mt-1">{{ form.order.errors }}</div>
+                    {% endif %}
+                    <small class="text-muted">Lower numbers appear first</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-info">
+            <i class="fas fa-lightbulb"></i> 
+            <strong>Font Awesome Icons:</strong> Visit 
+            <a href="https://fontawesome.com/icons" target="_blank">fontawesome.com/icons</a> to find icons.
+            Use the format "fas fa-icon-name" or "fab fa-icon-name"
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Statistic
+            </button>
+            <a href="{% url 'stats_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

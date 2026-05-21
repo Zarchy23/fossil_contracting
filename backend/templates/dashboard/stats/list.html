@@ -1,0 +1,66 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}
+<h1><i class="fas fa-chart-bar"></i> Statistics</h1>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Company Statistics</h2>
+    <a href="{% url 'stat_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Statistic
+    </a>
+</div>
+
+{% if stats %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Label</th>
+                    <th>Value</th>
+                    <th>Icon</th>
+                    <th>Suffix</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in stats %}
+                <tr>
+                    <td>
+                        <strong>{{ stat.label }}</strong>
+                    </td>
+                    <td>
+                        <span style="font-size: 1.25rem; font-weight: 600; color: #1a472a;">{{ stat.value }}</span>
+                    </td>
+                    <td>
+                        {% if stat.icon %}
+                            <i class="{{ stat.icon }}"></i>
+                        {% else %}
+                            <span style="color: #6c757d;">-</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ stat.suffix }}</td>
+                    <td>
+                        <span class="badge bg-light text-dark">{{ stat.order }}</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'stat_edit' stat.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'stat_delete' stat.id %}" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> No statistics yet. <a href="{% url 'stat_create' %}">Add your first statistic</a>
+    </div>
+{% endif %}
+{% endblock %}

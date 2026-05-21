@@ -1,0 +1,79 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}
+<h1><i class="fas fa-concierge-bell"></i> Services</h1>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Services Management</h2>
+    <a href="{% url 'service_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Service
+    </a>
+</div>
+
+{% if services %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+        {% for service in services %}
+        <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s;">
+            <!-- Service Image -->
+            <div style="position: relative; overflow: hidden; background: #f0f0f0; height: 220px;">
+                {% if service.image_url %}
+                <img src="{{ service.image_url }}" alt="{{ service.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px;">
+                    <i class="fas fa-image"></i>
+                </div>
+                {% endif %}
+                
+                <!-- Icon Overlay -->
+                {% if service.icon %}
+                <div style="position: absolute; top: 12px; right: 12px; width: 45px; height: 45px; background: rgba(26, 71, 42, 0.95); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
+                    <i class="{{ service.icon }}"></i>
+                </div>
+                {% endif %}
+                
+                <!-- Featured Badge -->
+                {% if service.is_featured %}
+                <div style="position: absolute; top: 12px; left: 12px; background: #ffc107; color: #333; padding: 5px 10px; border-radius: 16px; font-weight: 600; font-size: 11px; display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-star"></i> FEATURED
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Card Body -->
+            <div style="padding: 16px; flex-grow: 1; display: flex; flex-direction: column;">
+                <h5 style="color: #1a472a; font-weight: 600; margin: 0 0 8px 0; font-size: 1.1rem;">{{ service.name }}</h5>
+                <p style="color: #6c757d; font-size: 0.9rem; line-height: 1.5; margin: 0 0 12px 0; flex-grow: 1;">{{ service.description|truncatewords:20 }}</p>
+                
+                <!-- Service Meta -->
+                <div style="padding: 10px 0; border-top: 1px solid #e9ecef; border-bottom: 1px solid #e9ecef; margin: 8px 0; font-size: 0.85rem; color: #6c757d;">
+                    <span><i class="fas fa-sort-numeric-up-alt"></i> Order: <strong style="color: #1a472a;">{{ service.order }}</strong></span>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div style="padding: 12px; border-top: 1px solid #e9ecef; display: flex; gap: 8px;">
+                <a href="{% url 'service_edit' service.id %}" style="flex: 1; padding: 8px 12px; background: white; border: 1.5px solid #0066cc; color: #0066cc; text-decoration: none; border-radius: 4px; font-size: 0.85rem; font-weight: 500; text-align: center; transition: all 0.3s; cursor: pointer;">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'service_delete' service.id %}" style="flex: 1; padding: 8px 12px; background: white; border: 1.5px solid #dc3545; color: #dc3545; text-decoration: none; border-radius: 4px; font-size: 0.85rem; font-weight: 500; text-align: center; transition: all 0.3s; cursor: pointer;">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <style>
+        div[style*="grid-template-columns"] > div:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+        }
+    </style>
+{% else %}
+    <div style="background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; padding: 16px; border-radius: 6px;">
+        <strong><i class="fas fa-info-circle"></i> No services yet.</strong> <a href="{% url 'service_create' %}" style="color: #004085; font-weight: 500;">Create one now</a>
+    </div>
+{% endif %}
+{% endblock %}
