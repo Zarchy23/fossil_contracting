@@ -36,7 +36,6 @@ venv.bak/
 db.sqlite3
 db.sqlite3-journal
 /media
-/staticfiles
 .env
 .env.local
 .env.*.local
@@ -51,15 +50,7 @@ db.sqlite3-journal
 Thumbs.db
 
 # Large Image Files - Store separately or in CDN
-frontend/static/images/*.jpg
-frontend/static/images/*.jpeg
-frontend/static/images/*.png
-frontend/static/images/*.gif
-frontend/static/images/*.JPG
-frontend/images/*.jpg
-frontend/images/*.jpeg
-frontend/images/*.png
-frontend/images/*.gif
+
 
 # Cache files
 *.pyc
@@ -99,10 +90,7 @@ Thumbs.db
 *.sqlite3
 *.db
 
-# Generated files
-staticfiles/
-/static/
-collect_static/
+# Generated fil
 *.sqlite3
 *.db
 db.sqlite3
