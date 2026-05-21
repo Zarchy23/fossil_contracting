@@ -111,3 +111,4 @@ __pycache__/
 *.pyc
 .env
 node_modules/
+all-project-images/
