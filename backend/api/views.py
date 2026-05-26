@@ -203,6 +203,9 @@ def contact(request):
 def anonymous_feedback_page(request):
     return render(request, 'anonymous-feedback.html')
 
+def minimal_feedback_page(request):
+    return render(request, 'minimal-feedback.html')
+
 def community_blog_page(request):
     return render(request, 'community-blog.html')
 

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from api.views import (
     index, about, services, land_development, projects_page, project_detail, contact,
-    anonymous_feedback_page, community_blog_page,
+    anonymous_feedback_page, minimal_feedback_page, community_blog_page,
     # Dashboard views
     dashboard, dashboard_login, dashboard_logout,
     projects_list, project_create, project_edit, project_delete,
@@ -23,6 +23,7 @@ urlpatterns = [
     path('projects/<str:project_slug>/', project_detail, name='project_detail'),
     path('contact/', contact, name='contact'),
     path('anonymous-feedback/', anonymous_feedback_page, name='anonymous_feedback'),
+    path('feedback/', minimal_feedback_page, name='minimal_feedback'),
     path('community-blog/', community_blog_page, name='community_blog'),
     
     # Admin Dashboard
